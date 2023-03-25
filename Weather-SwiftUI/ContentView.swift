@@ -8,27 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var isNight = false
+    
     var body: some View {
         ZStack { // arka plan rengimzstack ile
-            BackgroundView(topColor: .blue,
-                           bottomColor: Color("lightBlue")) //rengimi güvenli alanda tutmak için kullanırım bu kodu
+            BackgroundView(isNight: $isNight)
             VStack {
                CityTextView(cityName: "New York, USA")
-                MainWeatherStatusView(imageName: "cloud.sun.fill", temperature: 76)
-                
-    //struct oluşturup aşağı taşıdım             //VStack(spacing: 8) { //spacing 8 ile derece buluta biraz daha yaklaşmış oldu
-                    //Image(systemName: "cloud.sun.fill")
-                      //  .renderingMode(.original)
-                        //.resizable()
-                        //.aspectRatio(contentMode: .fit) //sf symbols'u normal görünümüne getirir.
-                        //.frame(width: 180, height: 180)
-                    
-                  //  Text("79°")
-                      //  .font(.system(size: 70, weight: .medium))
-                        //.foregroundColor(.white)
-                //}
-               // Spacer()//bulut ve derece uzaklaştı.Günler daha da aşağı inmiş oldu.Kendisi otomatik açı belirliyor.
-                //.padding(.bottom, 50) // Manuel aralık verebiliyorum.
+                MainWeatherStatusView(imageName: isNight ? "moon.stars.fill" : "cloud.sun.fill", temperature: 76)
                 
                 HStack(spacing: 20) {
                     WeatherDayView(dayOfWeek: "TUE",
@@ -50,14 +38,11 @@ struct ContentView: View {
             Spacer()
                 
                 Button {
-                   print("tapped")
+                    isNight.toggle()
                 } label: {
-                    Text("Change Day Time")
-                        .frame(width: 280, height: 50)
-                        .background(Color.white)
-                        .font(.system(size: 20, weight: .bold,
-                            design: .default))
-                        .cornerRadius(10)
+                    WeatherButton(title: "Change Day Time",
+                                  textColor: .blue,
+                                  backgroundColor: .white)
                 }
                 
                 Spacer()
@@ -101,12 +86,10 @@ struct WeatherDayView: View {
 
 struct BackgroundView: View {
     
-    var topColor: Color
-    var bottomColor: Color
+    @Binding var isNight: Bool
     
     var body: some View {
-        
-        LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
+        LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue , isNight ? .gray : Color("lightBlue")]),
                        startPoint: .topLeading,
                        endPoint: .bottomTrailing)
         .edgesIgnoringSafeArea(.all)
@@ -146,3 +129,7 @@ struct MainWeatherStatusView: View {
         .padding(.bottom, 40)
     }
 }
+
+
+
+
